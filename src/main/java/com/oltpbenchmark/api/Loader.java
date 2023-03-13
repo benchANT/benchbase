@@ -119,7 +119,7 @@ public abstract class Loader<T extends BenchmarkModule> {
 
     protected void updateAutoIncrement(Connection conn, Column catalog_col, int value) throws SQLException {
         String sql = null;
-        if (getDatabaseType() == DatabaseType.POSTGRES) {
+        if (getDatabaseType() == DatabaseType.POSTGRES || getDatabaseType() == DatabaseType.REDSHIFT) {
             String seqName = SQLUtil.getSequenceName(getDatabaseType(), catalog_col);
 
             sql = String.format("SELECT setval(%s, %d)", seqName.toLowerCase(), value);

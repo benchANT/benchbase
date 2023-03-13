@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
 
@@ -7,7 +8,8 @@
     <artifactId>benchbase</artifactId>
     <version>2021-SNAPSHOT</version>
     <name>BenchBase</name>
-    <description>BenchBase is a Multi-DBMS SQL Benchmarking Framework via JDBC https://github.com/cmu-db/benchbase</description>
+    <description>BenchBase is a Multi-DBMS SQL Benchmarking Framework via JDBC https://github.com/cmu-db/benchbase
+    </description>
     <url>https://github.com/cmu-db/benchbase</url>
 
     <properties>
@@ -44,6 +46,19 @@
                     <groupId>org.xerial</groupId>
                     <artifactId>sqlite-jdbc</artifactId>
                     <version>3.36.0.3</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>redshift</id>
+            <properties>
+                <classifier>redshift</classifier>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.amazon.redshift</groupId>
+                    <artifactId>redshift-jdbc42</artifactId>
+                    <version>2.1.0.11</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -317,7 +332,8 @@
                 </executions>
                 <configuration>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
+                    </generateGitPropertiesFilename>
                     <commitIdGenerationMode>full</commitIdGenerationMode>
                     <useNativeGit>true</useNativeGit>
                 </configuration>
