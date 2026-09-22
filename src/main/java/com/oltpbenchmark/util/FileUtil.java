@@ -15,10 +15,10 @@
  *
  */
 
-
 package com.oltpbenchmark.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -28,86 +28,93 @@ import java.util.regex.Pattern;
  */
 public abstract class FileUtil {
 
-    private static final Pattern EXT_SPLIT = Pattern.compile("\\.");
+  private static final Pattern EXT_SPLIT = Pattern.compile("\\.");
 
-    /**
-     * Join path components
-     *
-     * @param args
-     * @return
-     */
-    public static String joinPath(String... args) {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for (String a : args) {
-            if (a != null && a.length() > 0) {
-                if (!first) {
-                    result.append("/");
-                }
-                result.append(a);
-                first = false;
-            }
+  /**
+   * Join path components
+   *
+   * @param args
+   * @return
+   */
+  public static String joinPath(String... args) {
+    StringBuilder result = new StringBuilder();
+    boolean first = true;
+    for (String a : args) {
+      if (a != null && a.length() > 0) {
+        if (!first) {
+          result.append("/");
         }
-        return result.toString();
+        result.append(a);
+        first = false;
+      }
+    }
+    return result.toString();
+  }
+
+  /**
+   * Given a basename for a file, find the next possible filename if this file already exists. For
+   * example, if the file test.res already exists, create a file called, test.1.res
+   *
+   * @param basename
+   * @return
+   */
+  public static String getNextFilename(String basename) {
+
+    if (!exists(basename)) return basename;
+
+    File f = new File(basename);
+    if (f != null && f.isFile()) {
+      String parts[] = EXT_SPLIT.split(basename);
+
+      // Check how many files already exist
+      int counter = 1;
+      String nextName = parts[0] + "." + counter + "." + parts[1];
+      while (exists(nextName)) {
+        ++counter;
+        nextName = parts[0] + "." + counter + "." + parts[1];
+      }
+      return nextName;
     }
 
-    /**
-     * Given a basename for a file, find the next possible filename if this file
-     * already exists. For example, if the file test.res already exists, create
-     * a file called, test.1.res
-     *
-     * @param basename
-     * @return
-     */
-    public static String getNextFilename(String basename) {
+    // Should we throw instead??
+    return null;
+  }
 
-        if (!exists(basename))
-            return basename;
+  public static boolean exists(String path) {
+    return (new File(path).exists());
+  }
 
-        File f = new File(basename);
-        if (f != null && f.isFile()) {
-            String parts[] = EXT_SPLIT.split(basename);
+  public static String checkPath(String path, String name) throws FileNotFoundException {
+    if (path != null) path = path.trim();
+    if (path == null || path.isEmpty()) return null;
 
-            // Check how many files already exist
-            int counter = 1;
-            String nextName = parts[0] + "." + counter + "." + parts[1];
-            while (exists(nextName)) {
-                ++counter;
-                nextName = parts[0] + "." + counter + "." + parts[1];
-            }
-            return nextName;
-        }
-
-        // Should we throw instead??
-        return null;
+    if (!FileUtil.exists(path)) {
+      throw new FileNotFoundException(name + " not found:" + path);
     }
+    return path;
+  }
 
-    public static boolean exists(String path) {
-        return (new File(path).exists());
+  /**
+   * Create any directory in the list paths if it doesn't exist
+   *
+   * @param paths
+   */
+  public static void makeDirIfNotExists(String... paths) {
+    for (String p : paths) {
+      if (p == null) {
+        continue;
+      }
+      File f = new File(p);
+      if (!f.exists()) {
+        f.mkdirs();
+      }
     }
+  }
 
-    /**
-     * Create any directory in the list paths if it doesn't exist
-     *
-     * @param paths
-     */
-    public static void makeDirIfNotExists(String... paths) {
-        for (String p : paths) {
-            if (p == null) {
-                continue;
-            }
-            File f = new File(p);
-            if (!f.exists()) {
-                f.mkdirs();
-            }
-        }
+  public static void writeStringToFile(File file, String content) throws IOException {
+    try (FileWriter writer = new FileWriter(file)) {
+      writer.write(content);
+      writer.flush();
     }
-
-    public static void writeStringToFile(File file, String content) throws IOException {
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(content);
-            writer.flush();
-        }
-    }
-
+  }
 }

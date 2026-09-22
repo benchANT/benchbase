@@ -54,3 +54,10 @@ build/
 
 # vim swap files
 .*.swp
+
+.env
+docker-compose-*.tar.gz
+
+# Python
+__pycache__/
+*.py[cod]
